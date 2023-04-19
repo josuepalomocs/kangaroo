@@ -1,9 +1,30 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme, Container } from "@chakra-ui/react";
+import LoginPage from "./components/Features/Login/LoginPage";
+
+const theme = extendTheme({
+  colors: {
+    blue: {
+      50: "#eff6ff",
+      100: "#dbeafe",
+      200: "#bfdbfe",
+      300: "#93c5fd",
+      400: "#60a5fa",
+      500: "#3b82f6",
+      600: "#2563eb",
+      700: "#1d4ed8",
+      800: "#1e40af",
+      900: "#1e3a8a",
+      950: "#172554",
+    },
+  },
+});
 
 function App() {
   return (
-    <ChakraProvider>
-      <></>
+    <ChakraProvider theme={theme}>
+      <Container height="100vh">
+        <LoginPage />
+      </Container>
     </ChakraProvider>
   );
 }
