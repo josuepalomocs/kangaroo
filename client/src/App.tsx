@@ -1,32 +1,48 @@
-import { ChakraProvider, extendTheme, Container } from "@chakra-ui/react";
+import MainPage from "./components/Features/Main/MainPage";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import LoginPage from "./components/Features/Login/LoginPage";
+import RegisterPage from "./components/Features/Register/RegisterPage";
+import { useContext } from "react";
+import { FirebaseAuthContext } from "./components/Providers/FirebaseAuthProvider";
 
-const theme = extendTheme({
-  colors: {
-    blue: {
-      50: "#eff6ff",
-      100: "#dbeafe",
-      200: "#bfdbfe",
-      300: "#93c5fd",
-      400: "#60a5fa",
-      500: "#3b82f6",
-      600: "#2563eb",
-      700: "#1d4ed8",
-      800: "#1e40af",
-      900: "#1e3a8a",
-      950: "#172554",
+export default function App() {
+  const user = useContext(FirebaseAuthContext);
+
+  async function loginRegisterLoader() {
+    if (user) {
+      return redirect("/");
+    }
+    return null;
+  }
+
+  async function mainLoader() {
+    if (!user) {
+      return redirect("/login");
+    }
+    return null;
+  }
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <MainPage />,
+      loader: mainLoader,
     },
-  },
-});
+    {
+      path: "/login",
+      element: <LoginPage />,
+      loader: loginRegisterLoader,
+    },
+    {
+      path: "/register",
+      element: <RegisterPage />,
+      loader: loginRegisterLoader,
+    },
+  ]);
 
-function App() {
-  return (
-    <ChakraProvider theme={theme}>
-      <Container height="100vh">
-        <LoginPage />
-      </Container>
-    </ChakraProvider>
-  );
+  return <RouterProvider router={router} />;
 }
-
-export default App;

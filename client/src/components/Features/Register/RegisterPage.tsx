@@ -17,27 +17,31 @@ import { redirect } from "react-router-dom";
 import { useFormik } from "formik";
 import {
   createUserWithEmailAndPassword,
-  signInWithPopup,
   GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { firebaseAuth } from "../../../lib/firebase";
-import firebase from "firebase/compat";
 import {
-  logInUsingEmailAndPassword,
   logInUsingGooglePopup,
+  registerUser,
 } from "../../../services/authServices";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const user = useContext(FirebaseAuthContext);
 
   if (user) {
     redirect("/");
   }
 
-  const loginFormik = useFormik({
-    initialValues: { email: "", password: "" },
+  const registerFormik = useFormik({
+    initialValues: { username: "", email: "", password: "", cpassword: "" },
     onSubmit: (values) => {
-      logInUsingEmailAndPassword(values.email, values.password);
+      registerUser(
+        values.username,
+        values.email,
+        values.password,
+        values.cpassword
+      );
     },
   });
 
@@ -50,7 +54,7 @@ export default function LoginPage() {
         alignItems="center"
       >
         <Box flex={1}>
-          <Heading marginBottom={8}>Login</Heading>
+          <Heading marginBottom={8}>Register</Heading>
           <Box width="full" display="flex" gap={4} marginBottom={8}>
             <Button
               width="full"
@@ -73,8 +77,24 @@ export default function LoginPage() {
           </Box>
           <Divider marginBottom={8} />
           <Box marginBottom={8}>
-            <form onSubmit={loginFormik.handleSubmit}>
+            <form onSubmit={registerFormik.handleSubmit}>
               <FormControl display="flex" flexDirection="column" gap={4}>
+                <Box>
+                  <FormLabel>Username</FormLabel>
+                  <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="kangaroo"
+                    onChange={registerFormik.handleChange}
+                    value={registerFormik.values.username}
+                    borderTop="none"
+                    borderLeft="none"
+                    borderRight="none"
+                    borderBottom="1px solid gray.200"
+                    rounded="none"
+                  />
+                </Box>
                 <Box>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -82,8 +102,8 @@ export default function LoginPage() {
                     name="email"
                     type="email"
                     placeholder="example@kangaroo.com"
-                    onChange={loginFormik.handleChange}
-                    value={loginFormik.values.email}
+                    onChange={registerFormik.handleChange}
+                    value={registerFormik.values.email}
                     borderTop="none"
                     borderLeft="none"
                     borderRight="none"
@@ -98,8 +118,8 @@ export default function LoginPage() {
                     name="password"
                     type="password"
                     placeholder="••••••••"
-                    onChange={loginFormik.handleChange}
-                    value={loginFormik.values.password}
+                    onChange={registerFormik.handleChange}
+                    value={registerFormik.values.password}
                     borderTop="none"
                     borderLeft="none"
                     borderRight="none"
@@ -107,8 +127,21 @@ export default function LoginPage() {
                     rounded="none"
                   />
                 </Box>
-                <Box textAlign="right">
-                  <Link color="black">Forgot password?</Link>
+                <Box>
+                  <FormLabel>Confirm password</FormLabel>
+                  <Input
+                    id="cpassword"
+                    name="cpassword"
+                    type="password"
+                    placeholder="••••••••"
+                    onChange={registerFormik.handleChange}
+                    value={registerFormik.values.cpassword}
+                    borderTop="none"
+                    borderLeft="none"
+                    borderRight="none"
+                    borderBottom="1px solid gray.200"
+                    rounded="none"
+                  />
                 </Box>
                 <Box>
                   <Button
@@ -119,7 +152,7 @@ export default function LoginPage() {
                     height={12}
                     borderRadius="12px"
                   >
-                    Login
+                    Register
                   </Button>
                 </Box>
               </FormControl>
@@ -127,9 +160,9 @@ export default function LoginPage() {
           </Box>
           <Box textAlign="center">
             <Text color="gray.500">
-              Don't have an account?{" "}
-              <Link href="/register" color="black">
-                Register
+              Already have an account?{" "}
+              <Link href="/login" color="black">
+                Login
               </Link>
             </Text>
           </Box>
